@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, X, Trophy, Zap, Gamepad2, Shield, Vote, Network, Coins, Star, ChevronRight } from 'lucide-react';
+import { getRandomPuzzles } from '../data/questions';
 
 const TreasureHuntGame = () => {
   const [currentPuzzle, setCurrentPuzzle] = useState(0);
@@ -9,94 +10,7 @@ const TreasureHuntGame = () => {
   const [showFeedback, setShowFeedback] = useState(false);
   const [gameStarted, setGameStarted] = useState(false);
   const [completionCode, setCompletionCode] = useState('');
-
-  const puzzles = [
-    {
-      id: 1,
-      icon: <Network className="w-12 h-12" />,
-      color: "from-pink-600 via-purple-600 to-indigo-600",
-      title: "The Relay Chain",
-      subtitle: "Core Architecture",
-      clue: "In the heart of Polkadot lies a special chain that coordinates all parachains but runs no smart contracts. What is this chain called?",
-      question: "What is the central coordinating chain in Polkadot?",
-      options: [
-        { id: 'a', text: "The Relay Chain", correct: true },
-        { id: 'b', text: "The Main Chain", correct: false },
-        { id: 'c', text: "The Hub Chain", correct: false },
-        { id: 'd', text: "The Master Chain", correct: false }
-      ],
-      explanation: "The Relay Chain is Polkadot's heart! It coordinates consensus and communication between all parachains.",
-      hint: "Think relay race... passing messages between runners"
-    },
-    {
-      id: 2,
-      icon: <Zap className="w-12 h-12" />,
-      color: "from-cyan-600 via-blue-600 to-purple-600",
-      title: "Cross-Chain Messages",
-      subtitle: "Interoperability",
-      clue: "Parachains need to talk to each other securely. What protocol makes this trustless communication possible?",
-      question: "What protocol enables parachain communication?",
-      options: [
-        { id: 'a', text: "IBC Protocol", correct: false },
-        { id: 'b', text: "XCM (Cross-Consensus Messaging)", correct: true },
-        { id: 'c', text: "TCP/IP", correct: false },
-        { id: 'd', text: "WebSocket", correct: false }
-      ],
-      explanation: "XCM is Polkadot's universal language for secure cross-chain communication!",
-      hint: "X marks the spot... for Cross-chain messaging"
-    },
-    {
-      id: 3,
-      icon: <Shield className="w-12 h-12" />,
-      color: "from-green-600 via-emerald-600 to-teal-600",
-      title: "Identity System",
-      subtitle: "Decentralized Verification",
-      clue: "In Polkadot, you can verify your real identity on-chain. But who approves and verifies this information?",
-      question: "Who verifies on-chain identities in Polkadot?",
-      options: [
-        { id: 'a', text: "Polkadot Foundation only", correct: false },
-        { id: 'b', text: "Community-elected Registrars", correct: true },
-        { id: 'c', text: "Wallet providers", correct: false },
-        { id: 'd', text: "AI verification", correct: false }
-      ],
-      explanation: "Registrars are elected by the community to verify identities in a decentralized way!",
-      hint: "Who registers official documents? Now make it decentralized..."
-    },
-    {
-      id: 4,
-      icon: <Vote className="w-12 h-12" />,
-      color: "from-orange-600 via-red-600 to-pink-600",
-      title: "Governance Power",
-      subtitle: "Democracy in Action",
-      clue: "Every DOT holder can vote on proposals. But there's a way to amplify your voting power by locking tokens longer...",
-      question: "What mechanism gives more voting power for longer token locks?",
-      options: [
-        { id: 'a', text: "Time-Weighted Voting", correct: false },
-        { id: 'b', text: "Conviction Voting", correct: true },
-        { id: 'c', text: "Stake Multiplication", correct: false },
-        { id: 'd', text: "Lock Bonding", correct: false }
-      ],
-      explanation: "Conviction Voting rewards commitment—lock longer, vote stronger (up to 6x power)!",
-      hint: "Show your conviction... your strong belief in decisions"
-    },
-    {
-      id: 5,
-      icon: <Coins className="w-12 h-12" />,
-      color: "from-yellow-600 via-amber-600 to-orange-600",
-      title: "Treasury Economics",
-      subtitle: "Sustainable Funding",
-      clue: "Polkadot's treasury funds ecosystem projects. But what happens to DOT that sits unspent in the treasury?",
-      question: "What happens to unspent treasury funds?",
-      options: [
-        { id: 'a', text: "Accumulate forever", correct: false },
-        { id: 'b', text: "1% is burned each period", correct: true },
-        { id: 'c', text: "Sent to validators", correct: false },
-        { id: 'd', text: "Returned to users", correct: false }
-      ],
-      explanation: "The treasury burns 1% of unspent funds each period to encourage active spending!",
-      hint: "Use it or lose it... to the burn mechanism"
-    }
-  ];
+  const [puzzles, setPuzzles] = useState(() => getRandomPuzzles(5));
 
   const generateCode = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
@@ -145,6 +59,7 @@ const TreasureHuntGame = () => {
     setShowFeedback(false);
     setGameStarted(false);
     setCompletionCode('');
+    setPuzzles(getRandomPuzzles(5)); // Get new random questions for replay
   };
 
   const isGameComplete = completionCode !== '';
