@@ -1,7 +1,8 @@
 {
   "name": "unlock-the-chain",
   "version": "1.0.0",
-  "description": "Polkadot treasure hunt game for sub0",
+  "description": "PBA activation game for sub0",
+  "author": "Konstantinos Tsolakidis",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
