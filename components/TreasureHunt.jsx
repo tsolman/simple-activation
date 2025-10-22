@@ -16,6 +16,26 @@ const TreasureHuntGame = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
+  const trackGameCompletion = async (finalPoints, won, code = null) => {
+    try {
+      await fetch('/api/track-game', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          playerName: playerName,
+          score: finalPoints,
+          won: won,
+          rewardCode: code
+        })
+      });
+    } catch (error) {
+      console.error('Failed to track game:', error);
+      // Don't show error to user, just log it
+    }
+  };
+
   const startGame = () => {
     if (playerName.trim()) {
       setGameStarted(true);
@@ -33,8 +53,10 @@ const TreasureHuntGame = () => {
     const current = puzzles[currentPuzzle];
     const selected = current.options.find(opt => opt.id === selectedAnswer);
 
+    let finalPoints = points;
     if (selected && selected.correct) {
-      setPoints(points + 20);
+      finalPoints = points + 20;
+      setPoints(finalPoints);
     }
 
     setShowFeedback(true);
@@ -46,7 +68,20 @@ const TreasureHuntGame = () => {
       if (currentPuzzle < puzzles.length - 1) {
         setCurrentPuzzle(currentPuzzle + 1);
       } else {
-        setCompletionCode(generateCode());
+        // Only generate code if player has 60+ points (won)
+        const won = finalPoints >= 60;
+        let code = null;
+
+        if (won) {
+          code = generateCode();
+          setCompletionCode(code);
+        } else {
+          // Still mark game as complete, but without a code
+          setCompletionCode('NO_WIN');
+        }
+
+        // Track the game completion
+        trackGameCompletion(finalPoints, won, code);
       }
     }, 3500);
   };
@@ -63,6 +98,7 @@ const TreasureHuntGame = () => {
   };
 
   const isGameComplete = completionCode !== '';
+  const hasWon = points >= 60;
   const currentPuzzleData = puzzles[currentPuzzle];
   const progress = ((currentPuzzle + 1) / puzzles.length) * 100;
 
@@ -289,8 +325,8 @@ const TreasureHuntGame = () => {
               </div>
             )}
 
-            {/* Completion Screen */}
-            {isGameComplete && (
+            {/* Completion Screen - Winner (60+ points) */}
+            {isGameComplete && hasWon && completionCode !== 'NO_WIN' && (
               <div className="p-12 text-center space-y-8">
                 <div className="inline-block p-8 rounded-3xl bg-gradient-to-r from-yellow-600/20 to-amber-600/20 border border-yellow-500/30">
                   <Trophy className="w-32 h-32 text-yellow-500 mx-auto animate-bounce" />
@@ -344,6 +380,70 @@ const TreasureHuntGame = () => {
                   className="px-12 py-4 bg-white/10 hover:bg-white/20 rounded-2xl font-bold transition-all border border-white/20"
                 >
                   PLAY AGAIN
+                </button>
+              </div>
+            )}
+
+            {/* Completion Screen - Try Again (< 60 points) */}
+            {isGameComplete && (!hasWon || completionCode === 'NO_WIN') && (
+              <div className="p-12 text-center space-y-8">
+                <div className="inline-block p-8 rounded-3xl bg-gradient-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30">
+                  <Gamepad2 className="w-32 h-32 text-blue-400 mx-auto" />
+                </div>
+
+                <div>
+                  <h2 className="text-6xl font-black mb-4 bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    KEEP GOING!
+                  </h2>
+                  <p className="text-3xl font-bold text-gray-300 mb-2">
+                    {points} / 100 POINTS
+                  </p>
+                  <p className="text-xl text-gray-400">
+                    You need 60+ points to claim your reward
+                  </p>
+                </div>
+
+                <div className="max-w-2xl mx-auto bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-3xl p-8 border-2 border-purple-500">
+                  <div className="mb-6">
+                    <h3 className="text-2xl font-black text-purple-400 mb-4">
+                      Practice Makes Better! 💪
+                    </h3>
+                    <p className="text-lg text-gray-300 leading-relaxed">
+                      You're on the right path! Each attempt helps you learn more about Polkadot's ecosystem.
+                      Take another shot and unlock your reward!
+                    </p>
+                  </div>
+
+                  <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                    <p className="text-cyan-400 font-semibold mb-3">💡 Tips for Success:</p>
+                    <ul className="text-left space-y-2 text-gray-300">
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400 mt-1">•</span>
+                        <span>Read the clues and hints carefully</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400 mt-1">•</span>
+                        <span>Each question teaches you something new</span>
+                      </li>
+                      <li className="flex items-start gap-2">
+                        <span className="text-purple-400 mt-1">•</span>
+                        <span>Remember what you learned and try again!</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="max-w-2xl mx-auto bg-white/5 rounded-2xl p-6 border border-white/10">
+                  <p className="text-lg font-bold text-cyan-400 mb-4">KNOWLEDGE GAINED:</p>
+                  <p className="text-gray-400">Every question helps you understand Polkadot better. You're building your Web3 knowledge!</p>
+                </div>
+
+                <button
+                  onClick={resetGame}
+                  className="px-12 py-6 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 rounded-2xl font-black text-xl transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto"
+                >
+                  TRY AGAIN
+                  <ChevronRight className="w-6 h-6" />
                 </button>
               </div>
             )}

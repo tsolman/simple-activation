@@ -21,17 +21,49 @@ Open http://localhost:3000
 ## Game Flow
 
 1. Player enters name
-2. Answers 5 Polkadot knowledge puzzles
-3. Gets a 6-digit reward code
-4. Shows code to claim prize
+2. Answers 5 randomly selected Polkadot knowledge puzzles
+3. Must score 60+ points (3+ correct answers) to win
+4. Winners get a 6-digit reward code
+5. Shows code to claim prize
+6. Players scoring < 60 points are encouraged to try again
 
 ## Topics Covered
 
-- Relay Chain
+35+ questions covering:
+- Relay Chain & Parachains
 - XCM (Cross-Consensus Messaging)
-- On-chain Identity
-- Conviction Voting
-- Treasury Mechanism
+- On-chain Identity & Registrars
+- Conviction Voting & OpenGov
+- Treasury & Economics
+- Substrate & WASM
+- NPoS & Consensus (GRANDPA, BABE)
+- Smart Contracts (ink!)
+- And more...
+
+## Analytics & Tracking
+
+The game includes a built-in analytics dashboard that tracks:
+- Total games, wins, and losses
+- Win rates and average scores
+- Daily statistics
+- Top players and leaderboards
+- Player retry attempts
+- Recent game activity
+
+**Setup:** See [ANALYTICS_SETUP.md](./ANALYTICS_SETUP.md) for detailed instructions.
+
+**Quick Setup:**
+1. Create a free [Neon Postgres](https://neon.tech) database
+2. Add `DATABASE_URL` to `.env.local`
+3. Run the app and visit `/analytics`
+
+**View Dashboard:** Visit `https://your-app.vercel.app/analytics`
+
+**Reset Database:**
+```bash
+npm run reset-db  # Interactive CLI with confirmations
+```
+Or use the "Reset DB" button in the analytics dashboard.
 
 ## Arcade Machine Setup
 
@@ -56,7 +88,7 @@ msedge --kiosk YOUR_VERCEL_URL
 
 ### Change Questions
 
-Edit the `puzzles` array in `components/TreasureHunt.jsx`:
+Edit the questions in `data/questions.js`:
 
 ```javascript
 const puzzles = [
@@ -98,15 +130,18 @@ if (selected && selected.correct) {
 
 ## Features
 
-✅ No backend required
-✅ No database needed
-✅ Touch-optimized interface
+✅ 35+ educational Polkadot questions with random selection
+✅ 60+ point win threshold (encourages learning)
+✅ Real-time analytics dashboard
+✅ Player tracking and leaderboards
+✅ Daily statistics and retry tracking
+✅ Touch-optimized interface for arcade machines
 ✅ Works in any modern browser
 ✅ Easy to deploy on Vercel
-✅ Generates random 6-digit codes
-✅ 5 educational Polkadot puzzles
-✅ Score tracking
+✅ Generates unique 6-digit reward codes
 ✅ Beautiful gradients and animations
+✅ Serverless architecture with Neon Postgres
+✅ Auto-refresh analytics (every 30 seconds)
 
 ## Event Usage
 
