@@ -23,9 +23,16 @@ Open http://localhost:3000
 1. Player enters name
 2. Answers 5 randomly selected Polkadot knowledge puzzles
 3. Must score 60+ points (3+ correct answers) to win
-4. Winners get a 6-digit reward code
-5. Shows code to claim prize
+4. Winners get a QR code (scannable) + 6-digit backup code
+5. Scan QR code or show code to claim prize
 6. Players scoring < 60 points are encouraged to try again
+
+## Display Features
+
+- **Square Layout**: Optimized 1:1 aspect ratio for arcade displays
+- **QR Code Rewards**: Winners receive a scannable QR code with backup text code
+- **Touch-Optimized**: Perfect for arcade machine touchscreens
+- **Responsive**: Automatically scales to fit screen (max 1080x1080px)
 
 ## Topics Covered
 
@@ -130,6 +137,8 @@ if (selected && selected.correct) {
 
 ## Features
 
+✅ **Square 1:1 layout** - Perfect for arcade displays
+✅ **QR code rewards** - Scannable codes with text backup
 ✅ 35+ educational Polkadot questions with random selection
 ✅ 60+ point win threshold (encourages learning)
 ✅ Real-time analytics dashboard
